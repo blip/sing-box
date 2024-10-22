@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/sagernet/sing-box/adapter"
-	"github.com/sagernet/sing-dns"
+	dns "github.com/sagernet/sing-dns"
 	"github.com/sagernet/sing/common/cache"
 	E "github.com/sagernet/sing/common/exceptions"
 	F "github.com/sagernet/sing/common/format"
@@ -171,9 +171,9 @@ func (r *Router) Exchange(ctx context.Context, message *mDNS.Msg) (*mDNS.Msg, er
 			for _, answer := range response.Answer {
 				switch record := answer.(type) {
 				case *mDNS.A:
-					r.dnsReverseMapping.Save(M.AddrFromIP(record.A), fqdnToDomain(record.Hdr.Name), int(record.Hdr.Ttl))
+					r.dnsReverseMapping.Save(M.AddrFromIP(record.A), fqdnToDomain(message.Question[0].Name), int(record.Hdr.Ttl))
 				case *mDNS.AAAA:
-					r.dnsReverseMapping.Save(M.AddrFromIP(record.AAAA), fqdnToDomain(record.Hdr.Name), int(record.Hdr.Ttl))
+					r.dnsReverseMapping.Save(M.AddrFromIP(record.AAAA), fqdnToDomain(message.Question[0].Name), int(record.Hdr.Ttl))
 				}
 			}
 		}
